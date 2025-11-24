@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ukWDOLL • Universal Store</title>
+    <title>ukWDOLL • Elite Store</title>
     <style>
         * {
             margin: 0;
@@ -12,180 +12,406 @@
             font-family: 'Segoe UI', Arial, sans-serif;
         }
         
+        :root {
+            --primary: #00ff88;
+            --primary-dark: #00cc66;
+            --bg: #0c0c0c;
+            --card: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #888;
+        }
+        
         body {
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
-            color: #fff;
+            background: linear-gradient(135deg, var(--bg) 0%, #111 100%);
+            color: var(--text);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
         
         .container {
             max-width: 400px;
             margin: 0 auto;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
         .header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
+            padding: 25px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.6s ease;
         }
         
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
             background: url('https://i.ibb.co/kgsjTDSd/e92183d0-b550-41eb-9766-64477dc4c19e.jpg') center/cover;
-            border: 3px solid #00ff88;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            animation: pulse 2s infinite;
         }
         
         h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: #00ff88;
+            font-size: 28px;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, var(--primary), #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
         
         .subtitle {
             opacity: 0.8;
             font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
         }
         
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         
         .category {
-            background: rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, var(--card) 0%, #222 100%);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.1);
             font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .category:hover::before {
+            left: 100%;
         }
         
         .category:hover {
-            background: rgba(0, 255, 136, 0.15);
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: var(--primary);
         }
         
-        .products {
-            display: none;
+        .products-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
         }
         
-        .product {
-            background: rgba(255,255,255,0.08);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        .product-card {
+            background: linear-gradient(135deg, var(--card) 0%, #222 100%);
+            padding: 20px;
+            border-radius: 15px;
             border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-color: var(--primary);
         }
         
         .product-name {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+            color: var(--primary);
         }
         
         .product-desc {
             font-size: 14px;
             opacity: 0.8;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .product-price {
-            color: #00ff88;
-            font-weight: 700;
+            color: var(--primary);
+            font-weight: 800;
             font-size: 18px;
         }
         
-        .back-btn {
-            background: rgba(255,255,255,0.1);
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-            font-size: 14px;
+        .product-stock {
+            font-size: 12px;
+            opacity: 0.7;
         }
         
-        .contact-btn {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: #000;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 15px 25px;
+            border-radius: 12px;
             text-align: center;
             font-weight: 700;
-            margin-top: 20px;
             cursor: pointer;
             border: none;
             width: 100%;
             font-size: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,255,136,0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.08);
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(-5px);
         }
         
         .contact-info {
             background: rgba(0, 255, 136, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
-            margin: 15px 0;
-            border: 1px solid #00ff88;
+            margin: 20px 0;
+            border: 1px solid var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        .admin-panel {
+            background: rgba(255,0,0,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 14px;
         }
         
         .hidden {
             display: none;
         }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification">Товар добавлен!</div>
+    
     <div class="container">
         <!-- Главная страница -->
-        <div id="main-page">
+        <div id="main-page" class="fade-in">
             <div class="header">
                 <div class="logo"></div>
                 <h1>ukWDOLL</h1>
-                <p class="subtitle">Универсальный склад • Все в одном месте</p>
+                <p class="subtitle">Элитный универсальный склад • Премиум качество</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="products-count">0</div>
+                        <div class="stat-label">Товаров</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Поддержка</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Надежность</div>
+                    </div>
+                </div>
             </div>
             
             <div class="categories">
-                <div class="category" onclick="showCategory('electronics')">📱 Электроника</div>
-                <div class="category" onclick="showCategory('clothes')">👕 Одежда/Обувь</div>
-                <div class="category" onclick="showCategory('food')">🍫 Продукты</div>
-                <div class="category" onclick="showCategory('cosmetics')">💄 Косметика</div>
-                <div class="category" onclick="showCategory('other')">🔧 Разное</div>
-                <div class="category" onclick="showContact()">📞 Связь</div>
+                <div class="category" onclick="showCategory('electronics')">
+                    <div>📱</div>
+                    <div>Электроника</div>
+                </div>
+                <div class="category" onclick="showCategory('clothes')">
+                    <div>👕</div>
+                    <div>Одежда</div>
+                </div>
+                <div class="category" onclick="showCategory('food')">
+                    <div>🍫</div>
+                    <div>Продукты</div>
+                </div>
+                <div class="category" onclick="showCategory('cosmetics')">
+                    <div>💄</div>
+                    <div>Косметика</div>
+                </div>
+                <div class="category" onclick="showCategory('other')">
+                    <div>🔧</div>
+                    <div>Разное</div>
+                </div>
+                <div class="category" onclick="showContact()">
+                    <div>📞</div>
+                    <div>Связь</div>
+                </div>
             </div>
 
-            <button class="contact-btn" onclick="showContact()">📞 Написать оператору</button>
+            <button class="btn" onclick="showContact()">
+                📞 Написать оператору
+            </button>
+            
+            <button class="btn btn-secondary" onclick="showAdminPanel()" style="margin-top: 10px;">
+                ⚙️ Добавить товар (Админ)
+            </button>
         </div>
 
         <!-- Страница категории -->
         <div id="category-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад к категориям</div>
             <div id="category-content"></div>
-            <button class="contact-btn" onclick="showContact()">📞 Заказать товар</button>
+            <button class="btn" onclick="showContact()">📞 Заказать товар</button>
         </div>
 
         <!-- Страница контактов -->
         <div id="contact-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад</div>
-            <div class="product">
-                <div class="product-name">📞 Связь с оператором</div>
-                <p class="product-desc">Для заказа товаров напишите нашему менеджеру:</p>
-                <div class="contact-info">
-                    <strong>@HXNS_59Gz</strong>
-                </div>
-                <div class="product-desc">
+            <div class="contact-info">
+                <div style="font-size: 20px; margin-bottom: 10px;">📞 Связь с оператором</div>
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 15px;">@HXNS_59Gz</div>
+                <div style="opacity: 0.9; line-height: 1.5;">
                     ⚡ Ответ в течение 5 минут<br>
                     💬 Уточняйте наличие и размеры<br>
-                    💳 Без предоплат • Быстрая доставка
+                    💳 Без предоплат • Быстрая доставка<br>
+                    🚚 По всей России
+                </div>
+            </div>
+        </div>
+
+        <!-- Админ панель -->
+        <div id="admin-page" class="hidden">
+            <div class="back-btn" onclick="showMain()">← Назад</div>
+            <div class="admin-panel">
+                <h3 style="color: #ff4444; margin-bottom: 15px;">⚙️ Панель управления</h3>
+                
+                <select class="admin-input" id="category-select">
+                    <option value="electronics">📱 Электроника</option>
+                    <option value="clothes">👕 Одежда</option>
+                    <option value="food">🍫 Продукты</option>
+                    <option value="cosmetics">💄 Косметика</option>
+                    <option value="other">🔧 Разное</option>
+                </select>
+                
+                <input type="text" class="admin-input" id="product-name" placeholder="Название товара">
+                <input type="number" class="admin-input" id="product-price" placeholder="Цена">
+                <input type="text" class="admin-input" id="product-desc" placeholder="Описание">
+                <input type="text" class="admin-input" id="product-stock" placeholder="В наличии (шт)" value="1">
+                
+                <button class="btn" onclick="addProduct()" style="background: #ff4444;">
+                    ✅ Добавить товар
+                </button>
+                
+                <div style="margin-top: 15px; font-size: 12px; opacity: 0.7;">
+                    💡 Товары сохраняются в локальном хранилище браузера
                 </div>
             </div>
         </div>
@@ -193,83 +419,154 @@
 
     <script>
         // Данные товаров
-        const productsData = {
+        let productsData = {
             'electronics': [
-                {name: 'Наушники TWS', price: 2500, desc: 'Новые, шумодав, полная комплектация'},
-                {name: 'Power Bank 10000mAh', price: 1500, desc: 'Быстрая зарядка, 2 порта'},
-                {name: 'Кабель Type-C', price: 300, desc: '2м, быстрая передача данных'},
-                {name: 'Чехлы для iPhone', price: 800, desc: 'Оригинальные, все модели'}
+                {name: 'Наушники TWS Pro', price: 3500, desc: 'Премиум качество, шумодав, 30ч работы', stock: 5},
+                {name: 'Power Bank 20000mAh', price: 2500, desc: 'Быстрая зарядка, 3 порта, LED дисплей', stock: 3},
+                {name: 'Кабель Type-C Gold', price: 800, desc: '2.4A быстрая зарядка, позолоченные контакты', stock: 10}
             ],
             'clothes': [
-                {name: 'Кроссы Nike Air Force', price: 3500, desc: '1:1 качество, все размеры'},
-                {name: 'Худи Oversize', price: 2000, desc: 'Хлопок 100%, модный крой'},
-                {name: 'Штаны Jogger', price: 1800, desc: 'Эластичные, спортивный стиль'},
-                {name: 'Кепки NY', price: 1200, desc: 'Оригинальный дизайн'}
+                {name: 'Кроссы Nike Air Max', price: 4500, desc: '1:1 оригинал, все размеры в наличии', stock: 8},
+                {name: 'Худи Supreme Box Logo', price: 3200, desc: 'Хлопок 100%, ограниченная серия', stock: 4},
+                {name: 'Штаны Carhartt WIP', price: 2800, desc: 'Прочные, стильные, премиум крой', stock: 6}
             ],
             'food': [
-                {name: 'Протеиновые батончики', price: 150, desc: 'Партия 20шт, разные вкусы'},
-                {name: 'Энергетические напитки', price: 200, desc: 'Заказ от 10шт'},
-                {name: 'Импортные шоколадки', price: 300, desc: 'Европейские бренды'},
-                {name: 'Протеин WHEY', price: 2500, desc: '100% изолят, 900г'}
-            ],
-            'cosmetics': [
-                {name: 'Парфюм тестеры', price: 1800, desc: 'Оригинальные ароматы'},
-                {name: 'Уходовая косметика', price: 1200, desc: 'Корейские бренды'},
-                {name: 'Шампуни премиум', price: 900, desc: 'Профессиональные'}
-            ],
-            'other': [
-                {name: 'Инструменты', price: 1500, desc: 'Профессиональный набор'},
-                {name: 'Аксессуары для авто', price: 800, desc: 'Коврики, чехлы'},
-                {name: 'Канцелярия', price: 400, desc: 'Офисные принадлежности'}
+                {name: 'Протеиновые батончики', price: 200, desc: 'Партия 20шт, разные вкусы', stock: 50},
+                {name: 'Энергетики Red Bull', price: 300, desc: 'Заказ от 10шт, оригинал', stock: 30},
+                {name: 'Протеин WHEY Gold', price: 3200, desc: '100% изолят, 2000г, шоколад', stock: 7}
             ]
         };
+
+        // Загружаем данные из localStorage
+        function loadProducts() {
+            const saved = localStorage.getItem('ukwdoll_products');
+            if (saved) {
+                productsData = JSON.parse(saved);
+            }
+            updateProductsCount();
+        }
+
+        // Сохраняем данные в localStorage
+        function saveProducts() {
+            localStorage.setItem('ukwdoll_products', JSON.stringify(productsData));
+            updateProductsCount();
+        }
+
+        // Обновляем счетчик товаров
+        function updateProductsCount() {
+            let total = 0;
+            for (const category in productsData) {
+                total += productsData[category].length;
+            }
+            document.getElementById('products-count').textContent = total;
+        }
+
+        // Показываем уведомление
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
 
         // Названия категорий
         const categoryNames = {
             'electronics': '📱 Электроника',
-            'clothes': '👕 Одежда/Обувь',
-            'food': '🍫 Продукты',
+            'clothes': '👕 Одежда и обувь',
+            'food': '🍫 Продукты питания',
             'cosmetics': '💄 Косметика',
-            'other': '🔧 Разное'
+            'other': '🔧 Разные товары'
         };
 
         function showMain() {
             document.getElementById('main-page').classList.remove('hidden');
             document.getElementById('category-page').classList.add('hidden');
             document.getElementById('contact-page').classList.add('hidden');
+            document.getElementById('admin-page').classList.add('hidden');
         }
 
         function showCategory(categoryId) {
             const categoryName = categoryNames[categoryId] || 'Категория';
-            let html = `<div class="header"><h2>${categoryName}</h2></div>`;
+            let html = `<div class="header"><h2>${categoryName}</h2></div><div class="products-grid">`;
             
             if (productsData[categoryId] && productsData[categoryId].length > 0) {
                 productsData[categoryId].forEach(item => {
                     html += `
-                    <div class="product">
+                    <div class="product-card">
                         <div class="product-name">${item.name}</div>
                         <div class="product-desc">${item.desc}</div>
-                        <div class="product-price">${item.price} руб</div>
+                        <div class="product-footer">
+                            <div class="product-price">${item.price} ₽</div>
+                            <div class="product-stock">В наличии: ${item.stock} шт</div>
+                        </div>
                     </div>`;
                 });
             } else {
-                html += '<div class="product">Товары скоро появятся! Пишите оператору для уточнения ассортимента.</div>';
+                html += '<div class="product-card">Товары скоро появятся! Пишите оператору для уточнения ассортимента.</div>';
             }
+            
+            html += '</div>';
 
             document.getElementById('category-content').innerHTML = html;
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('category-page').classList.remove('hidden');
             document.getElementById('contact-page').classList.add('hidden');
+            document.getElementById('admin-page').classList.add('hidden');
         }
 
         function showContact() {
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('category-page').classList.add('hidden');
             document.getElementById('contact-page').classList.remove('hidden');
+            document.getElementById('admin-page').classList.add('hidden');
+        }
+
+        function showAdminPanel() {
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('category-page').classList.add('hidden');
+            document.getElementById('contact-page').classList.add('hidden');
+            document.getElementById('admin-page').classList.remove('hidden');
+        }
+
+        function addProduct() {
+            const category = document.getElementById('category-select').value;
+            const name = document.getElementById('product-name').value;
+            const price = parseInt(document.getElementById('product-price').value);
+            const desc = document.getElementById('product-desc').value;
+            const stock = parseInt(document.getElementById('product-stock').value) || 1;
+
+            if (!name || !price || !desc) {
+                showNotification('❌ Заполните все поля!');
+                return;
+            }
+
+            if (!productsData[category]) {
+                productsData[category] = [];
+            }
+
+            productsData[category].push({
+                name: name,
+                price: price,
+                desc: desc,
+                stock: stock
+            });
+
+            saveProducts();
+            
+            // Очищаем поля
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-desc').value = '';
+            document.getElementById('product-stock').value = '1';
+            
+            showNotification('✅ Товар добавлен!');
         }
 
         // Инициализация
+        loadProducts();
         showMain();
     </script>
 </body>
-  </html>
+    </html>
