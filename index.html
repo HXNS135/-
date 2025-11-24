@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ukWDOLL • Universal Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: url('https://i.ibb.co/kgsjTDSd/e92183d0-b550-41eb-9766-64477dc4c19e.jpg') center/cover;
+            border: 3px solid #00ff88;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #00ff88;
+        }
+        
+        .subtitle {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .category {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+        
+        .category:hover {
+            background: rgba(0, 255, 136, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .products {
+            display: none;
+        }
+        
+        .product {
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .product-desc {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            color: #00ff88;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .contact-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            margin-top: 20px;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .contact-info {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+            border: 1px solid #00ff88;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Главная страница -->
+        <div id="main-page">
+            <div class="header">
+                <div class="logo"></div>
+                <h1>ukWDOLL</h1>
+                <p class="subtitle">Универсальный склад • Все в одном месте</p>
+            </div>
+            
+            <div class="categories">
+                <div class="category" onclick="showCategory('electronics')">📱 Электроника</div>
+                <div class="category" onclick="showCategory('clothes')">👕 Одежда/Обувь</div>
+                <div class="category" onclick="showCategory('food')">🍫 Продукты</div>
+                <div class="category" onclick="showCategory('cosmetics')">💄 Косметика</div>
+                <div class="category" onclick="showCategory('other')">🔧 Разное</div>
+                <div class="category" onclick="showContact()">📞 Связь</div>
+            </div>
+
+            <button class="contact-btn" onclick="showContact()">📞 Написать оператору</button>
+        </div>
+
+        <!-- Страница категории -->
+        <div id="category-page" class="hidden">
+            <div class="back-btn" onclick="showMain()">← Назад к категориям</div>
+            <div id="category-content"></div>
+            <button class="contact-btn" onclick="showContact()">📞 Заказать товар</button>
+        </div>
+
+        <!-- Страница контактов -->
+        <div id="contact-page" class="hidden">
+            <div class="back-btn" onclick="showMain()">← Назад</div>
+            <div class="product">
+                <div class="product-name">📞 Связь с оператором</div>
+                <p class="product-desc">Для заказа товаров напишите нашему менеджеру:</p>
+                <div class="contact-info">
+                    <strong>@HXNS_59Gz</strong>
+                </div>
+                <div class="product-desc">
+                    ⚡ Ответ в течение 5 минут<br>
+                    💬 Уточняйте наличие и размеры<br>
+                    💳 Без предоплат • Быстрая доставка
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные товаров
+        const productsData = {
+            'electronics': [
+                {name: 'Наушники TWS', price: 2500, desc: 'Новые, шумодав, полная комплектация'},
+                {name: 'Power Bank 10000mAh', price: 1500, desc: 'Быстрая зарядка, 2 порта'},
+                {name: 'Кабель Type-C', price: 300, desc: '2м, быстрая передача данных'},
+                {name: 'Чехлы для iPhone', price: 800, desc: 'Оригинальные, все модели'}
+            ],
+            'clothes': [
+                {name: 'Кроссы Nike Air Force', price: 3500, desc: '1:1 качество, все размеры'},
+                {name: 'Худи Oversize', price: 2000, desc: 'Хлопок 100%, модный крой'},
+                {name: 'Штаны Jogger', price: 1800, desc: 'Эластичные, спортивный стиль'},
+                {name: 'Кепки NY', price: 1200, desc: 'Оригинальный дизайн'}
+            ],
+            'food': [
+                {name: 'Протеиновые батончики', price: 150, desc: 'Партия 20шт, разные вкусы'},
+                {name: 'Энергетические напитки', price: 200, desc: 'Заказ от 10шт'},
+                {name: 'Импортные шоколадки', price: 300, desc: 'Европейские бренды'},
+                {name: 'Протеин WHEY', price: 2500, desc: '100% изолят, 900г'}
+            ],
+            'cosmetics': [
+                {name: 'Парфюм тестеры', price: 1800, desc: 'Оригинальные ароматы'},
+                {name: 'Уходовая косметика', price: 1200, desc: 'Корейские бренды'},
+                {name: 'Шампуни премиум', price: 900, desc: 'Профессиональные'}
+            ],
+            'other': [
+                {name: 'Инструменты', price: 1500, desc: 'Профессиональный набор'},
+                {name: 'Аксессуары для авто', price: 800, desc: 'Коврики, чехлы'},
+                {name: 'Канцелярия', price: 400, desc: 'Офисные принадлежности'}
+            ]
+        };
+
+        // Названия категорий
+        const categoryNames = {
+            'electronics': '📱 Электроника',
+            'clothes': '👕 Одежда/Обувь',
+            'food': '🍫 Продукты',
+            'cosmetics': '💄 Косметика',
+            'other': '🔧 Разное'
+        };
+
+        function showMain() {
+            document.getElementById('main-page').classList.remove('hidden');
+            document.getElementById('category-page').classList.add('hidden');
+            document.getElementById('contact-page').classList.add('hidden');
+        }
+
+        function showCategory(categoryId) {
+            const categoryName = categoryNames[categoryId] || 'Категория';
+            let html = `<div class="header"><h2>${categoryName}</h2></div>`;
+            
+            if (productsData[categoryId] && productsData[categoryId].length > 0) {
+                productsData[categoryId].forEach(item => {
+                    html += `
+                    <div class="product">
+                        <div class="product-name">${item.name}</div>
+                        <div class="product-desc">${item.desc}</div>
+                        <div class="product-price">${item.price} руб</div>
+                    </div>`;
+                });
+            } else {
+                html += '<div class="product">Товары скоро появятся! Пишите оператору для уточнения ассортимента.</div>';
+            }
+
+            document.getElementById('category-content').innerHTML = html;
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('category-page').classList.remove('hidden');
+            document.getElementById('contact-page').classList.add('hidden');
+        }
+
+        function showContact() {
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('category-page').classList.add('hidden');
+            document.getElementById('contact-page').classList.remove('hidden');
+        }
+
+        // Инициализация
+        showMain();
+    </script>
+</body>
+  </html>
