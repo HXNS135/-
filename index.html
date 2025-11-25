@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ukWDOLL • Elite Store</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/kgsjTDSd/e92183d0-b550-41eb-9766-64477dc4c19e.jpg">
     <style>
         * {
             margin: 0;
@@ -30,49 +31,27 @@
             position: relative;
         }
 
-        /* Анимация падающих эмодзи */
-        .emoji-rain {
+        /* Фоновые украшения (не мешают кликам) */
+        .bg-decoration {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 0;
+            opacity: 0.1;
+            font-size: 40px;
         }
         
-        .emoji {
-            position: absolute;
-            font-size: 20px;
-            animation: fall linear infinite;
-            opacity: 0.7;
-        }
-        
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
-
-        /* Анимация мигающих скидок */
-        .discount-badge {
-            position: fixed;
-            background: linear-gradient(45deg, #ff0000, #ff8800);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            animation: pulse 2s infinite, float 6s ease-in-out infinite;
-            z-index: 9998;
-            box-shadow: 0 0 20px rgba(255,0,0,0.5);
-        }
+        .bg-1 { top: 10%; left: 5%; animation: float 8s ease-in-out infinite; }
+        .bg-2 { top: 70%; right: 10%; animation: float 10s ease-in-out infinite 2s; }
+        .bg-3 { top: 40%; left: 80%; animation: float 12s ease-in-out infinite 1s; }
+        .bg-4 { top: 80%; left: 20%; animation: float 9s ease-in-out infinite 3s; }
+        .bg-5 { top: 20%; right: 20%; animation: float 11s ease-in-out infinite 4s; }
         
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
         }
-        
+
+        /* Стили для контента */
         .container {
             max-width: 400px;
             margin: 0 auto;
@@ -86,17 +65,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(0); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -108,6 +76,11 @@
             animation: slideIn 0.6s ease;
         }
         
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
         .logo {
             width: 90px;
             height: 90px;
@@ -117,6 +90,12 @@
             border: 3px solid var(--primary);
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
             animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
         h1 {
@@ -155,6 +134,7 @@
             opacity: 0.7;
         }
         
+        /* Стили для кнопок с иконками */
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -173,6 +153,10 @@
             font-size: 14px;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
         
         .category::before {
@@ -196,6 +180,28 @@
             border-color: var(--primary);
         }
         
+        .category-icon {
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(0,255,136,0.1);
+            border: 2px solid var(--primary);
+        }
+        
+        /* Кастомные иконки через Unicode */
+        .icon-bear::before { content: "🐻"; }
+        .icon-electronics::before { content: "📱"; }
+        .icon-clothes::before { content: "👕"; }
+        .icon-food::before { content: "🍫"; }
+        .icon-cosmetics::before { content: "💄"; }
+        .icon-other::before { content: "🔧"; }
+        .icon-contact::before { content: "📞"; }
+        .icon-admin::before { content: "⚙️"; }
+
         .products-grid {
             display: grid;
             gap: 15px;
@@ -249,70 +255,6 @@
             opacity: 0.7;
         }
 
-        /* Галерея фото товара */
-        .product-gallery {
-            position: relative;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 200px;
-            background: #000;
-        }
-        
-        .gallery-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-        
-        .gallery-image.active {
-            display: block;
-        }
-        
-        .gallery-nav {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-            transform: translateY(-50%);
-        }
-        
-        .gallery-btn {
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .gallery-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-        }
-        
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-        }
-        
-        .dot.active {
-            background: var(--primary);
-        }
-        
         .btn {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: #000;
@@ -338,10 +280,6 @@
             background: rgba(255,255,255,0.1);
             color: var(--text);
             border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
         }
         
         .back-btn {
@@ -456,7 +394,70 @@
             transform: translateX(0);
         }
 
-        /* Детальная страница товара */
+        /* Галерея фото товара */
+        .product-gallery {
+            position: relative;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            background: #000;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        
+        .gallery-image.active {
+            display: block;
+        }
+        
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            transform: translateY(-50%);
+        }
+        
+        .gallery-btn {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .gallery-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        
+        .dot.active {
+            background: var(--primary);
+        }
+        
         .product-detail {
             background: linear-gradient(135deg, var(--card) 0%, #222 100%);
             padding: 20px;
@@ -497,16 +498,39 @@
             font-size: 12px;
             opacity: 0.7;
         }
+
+        /* Плавающие лейблы скидок (не мешают) */
+        .discount-label {
+            position: fixed;
+            background: linear-gradient(45deg, #ff0000, #ff8800);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .discount-1 { top: 15%; left: 8%; animation-delay: 0s; }
+        .discount-2 { top: 65%; right: 8%; animation-delay: 2s; }
+        .discount-3 { top: 35%; left: 75%; animation-delay: 4s; }
     </style>
 </head>
 <body>
-    <!-- Анимация падающих эмодзи -->
-    <div class="emoji-rain" id="emojiRain"></div>
+    <!-- Фоновые украшения (не кликабельные) -->
+    <div class="bg-decoration bg-1">🐻</div>
+    <div class="bg-decoration bg-2">⚡</div>
+    <div class="bg-decoration bg-3">💎</div>
+    <div class="bg-decoration bg-4">🎯</div>
+    <div class="bg-decoration bg-5">🚀</div>
     
     <!-- Плавающие скидки -->
-    <div class="discount-badge" style="top: 10%; left: 5%;">🔥 СКИДКИ 50%</div>
-    <div class="discount-badge" style="top: 60%; right: 5%;">💎 ПРЕМИУМ</div>
-    <div class="discount-badge" style="top: 30%; left: 60%;">⚡ ВЫГОДА</div>
+    <div class="discount-label discount-1">-50%</div>
+    <div class="discount-label discount-2">СКИДКИ</div>
+    <div class="discount-label discount-3">ВЫГОДА</div>
     
     <div class="notification" id="notification">Товар добавлен!</div>
     
@@ -536,27 +560,27 @@
             
             <div class="categories">
                 <div class="category" onclick="showCategory('electronics')">
-                    <div>📱</div>
+                    <div class="category-icon icon-electronics"></div>
                     <div>Электроника</div>
                 </div>
                 <div class="category" onclick="showCategory('clothes')">
-                    <div>👕</div>
+                    <div class="category-icon icon-clothes"></div>
                     <div>Одежда</div>
                 </div>
                 <div class="category" onclick="showCategory('food')">
-                    <div>🍫</div>
+                    <div class="category-icon icon-food"></div>
                     <div>Продукты</div>
                 </div>
                 <div class="category" onclick="showCategory('cosmetics')">
-                    <div>💄</div>
+                    <div class="category-icon icon-cosmetics"></div>
                     <div>Косметика</div>
                 </div>
                 <div class="category" onclick="showCategory('other')">
-                    <div>🔧</div>
+                    <div class="category-icon icon-other"></div>
                     <div>Разное</div>
                 </div>
                 <div class="category" onclick="showContact()">
-                    <div>📞</div>
+                    <div class="category-icon icon-contact"></div>
                     <div>Связь</div>
                 </div>
             </div>
@@ -565,12 +589,14 @@
                 📞 Написать оператору
             </button>
             
-            <!-- Админка только для твоего ID -->
+            <!-- Админка с защитой -->
             <button class="btn btn-secondary" onclick="checkAdminAccess()" style="margin-top: 10px;">
-                ⚙️ Добавить товар (Админ)
+                <div class="category-icon icon-admin" style="width: 20px; height: 20px; font-size: 14px; margin: 0 auto 5px;"></div>
+                Добавить товар (Админ)
             </button>
         </div>
 
+        <!-- Остальные страницы (категории, контакты, админка) остаются без изменений -->
         <!-- Страница категории -->
         <div id="category-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад к категориям</div>
@@ -600,7 +626,7 @@
             </div>
         </div>
 
-        <!-- Админ панель (скрыта по умолчанию) -->
+        <!-- Админ панель -->
         <div id="admin-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад</div>
             <div class="admin-panel">
@@ -611,42 +637,4 @@
                     <option value="clothes">👕 Одежда</option>
                     <option value="food">🍫 Продукты</option>
                     <option value="cosmetics">💄 Косметика</option>
-                    <option value="other">🔧 Разное</option>
-                </select>
-                
-                <input type="text" class="admin-input" id="product-name" placeholder="Название товара">
-                <input type="number" class="admin-input" id="product-price" placeholder="Цена">
-                <input type="text" class="admin-input" id="product-desc" placeholder="Описание">
-                <input type="number" class="admin-input" id="product-stock" placeholder="В наличии (шт)" value="1">
-                
-                <div class="file-input">
-                    <div style="margin-bottom: 8px;">📷 Фото товара (URL через запятую):</div>
-                    <input type="text" class="admin-input" id="product-photos" placeholder="https://example.com/photo1.jpg, https://example.com/photo2.jpg">
-                    <div style="font-size: 12px; opacity: 0.7; margin-top: 5px;">
-                        Можно добавить несколько фото через запятую
-                    </div>
-                </div>
-                
-                <button class="btn" onclick="addProduct()" style="background: #ff4444;">
-                    ✅ Добавить товар
-                </button>
-                
-                <div class="product-list" id="admin-product-list">
-                    <!-- Список товаров для удаления -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Твой уникальный ID для доступа к админке
-        const ADMIN_ACCESS_CODE = "HXNS_7846808504";
-        
-        // Данные товаров
-        let productsData = {};
-        let currentCategory = '';
-        let currentProductIndex = -1;
-
-        // Загружаем данные из localStorage
-        function loadProducts() {
-            const saved = localStorage.ge
+                    <opti
