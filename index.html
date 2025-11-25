@@ -31,7 +31,6 @@
             position: relative;
         }
 
-        /* Анимация частиц */
         .particles {
             position: fixed;
             top: 0;
@@ -68,7 +67,6 @@
             }
         }
 
-        /* Анимация неонового свечения */
         @keyframes neonGlow {
             0%, 100% {
                 text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 15px var(--primary);
@@ -78,7 +76,6 @@
             }
         }
 
-        /* Анимация плавающих элементов */
         @keyframes floating {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             33% { transform: translateY(-10px) rotate(5deg); }
@@ -116,7 +113,6 @@
             to { transform: translateX(0); }
         }
 
-        /* Анимированный градиентный бордер */
         .header::before {
             content: '';
             position: absolute;
@@ -188,7 +184,6 @@
             opacity: 0.7;
         }
         
-        /* Кнопки с улучшенными анимациями */
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -506,7 +501,6 @@
             transform: translateX(0);
         }
 
-        /* Галерея фото товара */
         .product-gallery {
             position: relative;
             margin-bottom: 15px;
@@ -521,6 +515,7 @@
             height: 100%;
             object-fit: cover;
             display: none;
+            cursor: pointer;
         }
         
         .gallery-image.active {
@@ -604,22 +599,32 @@
             margin-bottom: 15px;
         }
         
-        .product-meta {
+        #zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
             display: flex;
-            gap: 15px;
-            font-size: 12px;
-            opacity: 0.7;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #zoomed-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
         }
     </style>
 </head>
 <body>
-    <!-- Анимация частиц -->
     <div class="particles" id="particles"></div>
     
     <div class="notification" id="notification">Товар добавлен!</div>
     
     <div class="container">
-        <!-- Главная страница -->
         <div id="main-page" class="fade-in">
             <div class="header">
                 <div class="logo"></div>
@@ -677,26 +682,27 @@
                 📞 Написать оператору
             </button>
             
+            <<button class="btn" onclick="showContact()">
+                📞 Написать оператору
+            </button>
+            
             <button class="btn btn-secondary" onclick="checkAdminAccess()" style="margin-top: 10px;">
                 ⚙️ Добавить товар (Админ)
             </button>
-             </div>
+        </div>
 
-        <!-- Страница категории -->
         <div id="category-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад к категориям</div>
             <div id="category-content"></div>
             <button class="btn" onclick="showContact()">📞 Заказать товар</button>
         </div>
 
-        <!-- Детальная страница товара -->
         <div id="product-detail-page" class="hidden">
             <div class="back-btn" onclick="goBackFromDetail()">← Назад к товарам</div>
             <div id="product-detail-content"></div>
             <button class="btn" onclick="showContact()">📞 Заказать этот товар</button>
         </div>
 
-        <!-- Страница контактов -->
         <div id="contact-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад</div>
             <div class="contact-info">
@@ -711,7 +717,6 @@
             </div>
         </div>
 
-        <!-- Админ панель -->
         <div id="admin-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад</div>
             <div class="admin-panel">
@@ -743,7 +748,6 @@
             </div>
         </div>
 
-        <!-- Страница "Почему дёшево?" -->
         <div id="why-cheap-page" class="hidden">
             <div class="back-btn" onclick="showMain()">← Назад</div>
             
@@ -753,7 +757,6 @@
             </div>
 
             <div class="product-detail">
-                <!-- Фото "склада" -->
                 <div style="text-align: center; margin-bottom: 20px;">
                     <div style="width: 100%; height: 200px; background: linear-gradient(45deg, #1a1a1a, #333); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px;">
                         🏭
@@ -797,7 +800,6 @@
                 </div>
             </div>
 
-            <!-- "Доказательства" -->
             <div class="product-card" style="margin-top: 20px; background: rgba(0,255,136,0.05);">
                 <div class="product-name">📋 Наши доказательства</div>
                 <div class="product-desc">
@@ -815,15 +817,17 @@
         </div>
     </div>
 
+    <div id="zoom-modal" class="hidden">
+        <img id="zoomed-image" src="">
+        <button onclick="closeZoom()" style="position:absolute; top:20px; right:20px; background:#ff4444; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">✕</button>
+    </div>
+
     <script>
-        // Твой уникальный ID для доступа к админке
         const ADMIN_ACCESS_CODE = "7846808504";
-        
-        // Данные товаров
         let productsData = {};
         let currentCategory = '';
+        let currentPhotoIndex = 0;
 
-        // Анимация частиц
         function createParticles() {
             const particles = document.getElementById('particles');
             const colors = ['#00ff88', '#00ccff', '#ff4444', '#ffaa00', '#aa00ff'];
@@ -841,7 +845,6 @@
             }
         }
 
-        // Загружаем данные из localStorage
         function loadProducts() {
             const saved = localStorage.getItem('ukwdoll_products');
             if (saved) {
@@ -863,14 +866,12 @@
             updateAdminProductList();
         }
 
-        // Сохраняем данные в localStorage
         function saveProducts() {
             localStorage.setItem('ukwdoll_products', JSON.stringify(productsData));
             updateProductsCount();
             updateAdminProductList();
         }
 
-        // Обновляем счетчик товаров
         function updateProductsCount() {
             let total = 0;
             for (const category in productsData) {
@@ -879,7 +880,6 @@
             document.getElementById('products-count').textContent = total;
         }
 
-        // Показываем уведомление
         function showNotification(message) {
             const notif = document.getElementById('notification');
             notif.textContent = message;
@@ -889,7 +889,6 @@
             }, 3000);
         }
 
-        // Проверка доступа к админке
         function checkAdminAccess() {
             const code = prompt("🔐 Введите код доступа к админке:");
             if (code === ADMIN_ACCESS_CODE) {
@@ -899,7 +898,6 @@
             }
         }
 
-        // Функция показа страницы "Почему дёшево?"
         function showWhyCheap() {
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('why-cheap-page').classList.remove('hidden');
@@ -909,7 +907,6 @@
             document.getElementById('product-detail-page').classList.add('hidden');
         }
 
-        // Названия категорий
         const categoryNames = {
             'electronics': '📱 Электроника',
             'clothes': '👕 Одежда и обувь',
@@ -918,7 +915,6 @@
             'other': '🔧 Разные товары'
         };
 
-        // Функции навигации
         function showMain() {
             document.getElementById('main-page').classList.remove('hidden');
             document.getElementById('category-page').classList.add('hidden');
@@ -968,7 +964,7 @@
                 galleryHtml = `
                 <div class="product-gallery">
                     ${product.photos.map((photo, index) => 
-                        `<img src="${photo}" class="gallery-image ${index === 0 ? 'active' : ''}" alt="${product.name}" onclick="zoomPhoto(this)">
+                        `<img src="${photo}" class="gallery-image ${index === 0 ? 'active' : ''}" alt="${product.name}">`
                     ).join('')}
                     <div class="gallery-nav">
                         <button class="gallery-btn" onclick="prevPhoto()">‹</button>
@@ -981,11 +977,7 @@
                     </div>
                 </div>`;
             }
-            </div>
-<div id="zoom-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center;">
-    <img id="zoomed-image" src="" style="max-width:90%; max-height:90%; object-fit:contain;">
-    <button onclick="closeZoom()" style="position:absolute; top:20px; right:20px; background:#ff4444; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">✕</button>
-</div>
+            
             const html = `
                 <div class="product-detail">
                     ${galleryHtml}
@@ -1032,22 +1024,6 @@
             showPhoto(currentPhotoIndex);
         }
 
-    // Зум фото
-function zoomPhoto(img) {
-    document.getElementById('zoomed-image').src = img.src;
-    document.getElementById('zoom-modal').classList.remove('hidden');
-}
-
-function closeZoom() {
-    document.getElementById('zoom-modal').classList.add('hidden');
-}
-
-// Закрытие по клику на фон
-document.addEventListener('click', function(e) {
-    if (e.target.id === 'zoom-modal') {
-        closeZoom();
-    }
-});
         function showContact() {
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('category-page').classList.add('hidden');
