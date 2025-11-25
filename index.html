@@ -968,7 +968,7 @@
                 galleryHtml = `
                 <div class="product-gallery">
                     ${product.photos.map((photo, index) => 
-                        `<img src="${photo}" class="gallery-image ${index === 0 ? 'active' : ''}" alt="${product.name}">`
+                        `<img src="${photo}" class="gallery-image ${index === 0 ? 'active' : ''}" alt="${product.name}" onclick="zoomPhoto(this)">
                     ).join('')}
                     <div class="gallery-nav">
                         <button class="gallery-btn" onclick="prevPhoto()">‹</button>
@@ -981,7 +981,11 @@
                     </div>
                 </div>`;
             }
-            
+            </div>
+<div id="zoom-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center;">
+    <img id="zoomed-image" src="" style="max-width:90%; max-height:90%; object-fit:contain;">
+    <button onclick="closeZoom()" style="position:absolute; top:20px; right:20px; background:#ff4444; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">✕</button>
+</div>
             const html = `
                 <div class="product-detail">
                     ${galleryHtml}
@@ -1028,6 +1032,22 @@
             showPhoto(currentPhotoIndex);
         }
 
+    // Зум фото
+function zoomPhoto(img) {
+    document.getElementById('zoomed-image').src = img.src;
+    document.getElementById('zoom-modal').classList.remove('hidden');
+}
+
+function closeZoom() {
+    document.getElementById('zoom-modal').classList.add('hidden');
+}
+
+// Закрытие по клику на фон
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'zoom-modal') {
+        closeZoom();
+    }
+});
         function showContact() {
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('category-page').classList.add('hidden');
